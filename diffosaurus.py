@@ -1,3 +1,20 @@
+#!/usr/bin/env python3
+""""
+Copyright 2020 SUDKI Karim (@_Az0x_)
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+"""
+
 import r2pipe
 import subprocess
 import time
@@ -10,10 +27,18 @@ old_c = ''
 registers = []
 
 def cls():
+    #Clear screen
     print("\x1B[2J")
 
 
 def diff_strings(a, b):
+    #Highlight differences between registers
+    #Parameters:
+    # a (str): First string for comparison
+    # b (str): Second string for comparison
+    #Returns:
+    # m (boolean): Flag if modified (True)
+    # output (str): String with differences
     output = []
     m=False
     for c in range(len(a)):
@@ -27,6 +52,9 @@ def diff_strings(a, b):
 
 
 def filter_registers():
+    #Returns common registers between ESIL and DEBUG pipes
+    #Returns:
+    # regs: The list of common registers between ESIL and DEBUG pipes
     regs_esl = dict(x.split(" = ") for x in r2_esl.cmd("aer").split("\n")[:-1])
     regs_dbg = dict(x.split(" = ") for x in r2_dbg.cmd("dr").split("\n")[:-1])
     regs=[x for x in regs_dbg.keys() if x in regs_esl.keys()]
@@ -34,6 +62,9 @@ def filter_registers():
 
 
 def get_esil_registers():
+    #Fetch registers from ESIL pipe 
+    #Returns:
+    # regs (list): List of ESIL registers
     regs_esl = {}
     regs_esl = dict(x.split(" = ") for x in r2_esl.cmd("aer").split("\n")[:-1])
     if debug:
@@ -48,6 +79,9 @@ def get_esil_registers():
 
 
 def get_debug_registers():
+    #Fetch registers from DEBUG pipe  
+    #Returns:
+    # regs (list): List of DEBUG registers
     regs_dbg = {}
     regs_dbg = dict(x.split(" = ") for x in r2_dbg.cmd("dr").split("\n")[:-1])
     if debug:
@@ -62,6 +96,7 @@ def get_debug_registers():
 
 
 def reg_t2e_sync():
+    #Synchronize registers of DEBUG with ESIL pipe 
     regs_dbg = get_debug_registers()
     for x in regs_dbg:
         r2_esl.cmd(f"aer {x}={regs_dbg[x]}")
@@ -71,6 +106,7 @@ def reg_t2e_sync():
 
 
 def reg_e2t_sync():
+    #Synchronize registers of ESIL with DEBUG pipe 
     regs_esl = get_esil_registers()
     for x in regs_esl:
         r2_dbg.cmd(f"dr {x}={regs_esl[x]}")
@@ -80,6 +116,10 @@ def reg_e2t_sync():
 
 
 def print_regs(regs_dbg,regs_esl):
+    #Displays and perform possible actions based on the user choice
+    #Parameters:
+    # regs_dbg (dict): Contains the values of registers of DEBUG pipe
+    # regs_dbg (dict): Contains the values of registers of ESIL pipe
     global debug
     global old_c
     modified = False
@@ -134,6 +174,7 @@ def print_regs(regs_dbg,regs_esl):
 
 
 def print_logo():
+    #Print banner and logo 
     logo="\n\
                                           @@\n\
                                          @██@\n\
