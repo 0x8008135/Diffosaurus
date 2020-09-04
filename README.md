@@ -1,3 +1,4 @@
+![image](logo.png)
 # Diffosaurus
 This tool aims at improving ESIL in Radare2 by providing a convenient way to compare the execution of ESIL against a real target such as embedded device, debugged binary or emulated device (QEMU).
 
